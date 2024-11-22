@@ -28,15 +28,11 @@ namespace ApiOrdinario.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Personaje>> GetPersonajeID(int id)
+        public async Task<ActionResult<Personaje>> GetPersonajeID(string id)
         {
-            var response = await _client.GetAsync($"https://hp-api.onrender.com/api/characters/{id}");
-            if (!response.IsSuccessStatusCode)
-            {
-                return StatusCode((int)response.StatusCode, $"Error en la API externa: {response.ReasonPhrase}");
-            }
+            var response = await _client.GetAsync($"https://hp-api.onrender.com/api/character/{id}");
             var content = await response.Content.ReadAsStringAsync();
-            var personaje = JsonConvert.DeserializeObject<Personaje>(content);
+            var personaje = JsonConvert.DeserializeObject<IEnumerable<Personaje>>(content);
             return Ok(personaje);
         }
 
@@ -44,13 +40,9 @@ namespace ApiOrdinario.Controllers
         public async Task<ActionResult<IEnumerable<Personaje>>> GetPersonajesCasa(string houseName)
         {
             var response = await _client.GetAsync($"https://hp-api.onrender.com/api/characters/house/{houseName}");
-            if (!response.IsSuccessStatusCode)
-            {
-                return StatusCode((int)response.StatusCode, $"Error en la API externa: {response.ReasonPhrase}");
-            }
             var content = await response.Content.ReadAsStringAsync();
-            var personajes = JsonConvert.DeserializeObject<IEnumerable<Personaje>>(content);
-            return Ok(personajes);
+            var personaje = JsonConvert.DeserializeObject<IEnumerable<Personaje>>(content);
+            return Ok(personaje);
         }
 
     }
